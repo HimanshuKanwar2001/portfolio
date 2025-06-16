@@ -1,25 +1,29 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 
 export const FlipWords = ({ words, duration = 3000, className }) => {
   const [currentWord, setCurrentWord] = useState(words[0]);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // thanks for the fix Julian - https://github.com/Julian-AT
   const startAnimation = useCallback(() => {
-    const word = words[words.indexOf(currentWord) + 1] || words[0];
-    setCurrentWord(word);
+    const currentIndex = words.indexOf(currentWord);
+    const nextWord = words[(currentIndex + 1) % words.length];
+    setCurrentWord(nextWord);
     setIsAnimating(true);
   }, [currentWord, words]);
 
   useEffect(() => {
-    if (!isAnimating)
-      setTimeout(() => {
+    if (!isAnimating) {
+      const timeout = setTimeout(() => {
         startAnimation();
       }, duration);
+      return () => clearTimeout(timeout);
+    }
   }, [isAnimating, duration, startAnimation]);
+
+  if (!words || words.length === 0) return null;
 
   return (
     <AnimatePresence
@@ -28,19 +32,9 @@ export const FlipWords = ({ words, duration = 3000, className }) => {
       }}
     >
       <motion.div
-        initial={{
-          opacity: 0,
-          y: 10,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 10,
-        }}
+        key={currentWord}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         exit={{
           opacity: 0,
           y: -40,
@@ -49,13 +43,12 @@ export const FlipWords = ({ words, duration = 3000, className }) => {
           scale: 2,
           position: "absolute",
         }}
-        className={twMerge("z-10 inline-block relative text-left ", className)}
-        key={currentWord}
+        transition={{ type: "spring", stiffness: 100, damping: 10 }}
+        className={twMerge("z-10 inline-block relative text-left", className)}
       >
-        {/* edit suggested by Sajal: https://x.com/DewanganSajal */}
         {currentWord.split(" ").map((word, wordIndex) => (
           <motion.span
-            key={word + wordIndex}
+            key={`${word}-${wordIndex}`}
             initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{
@@ -66,7 +59,7 @@ export const FlipWords = ({ words, duration = 3000, className }) => {
           >
             {word.split("").map((letter, letterIndex) => (
               <motion.span
-                key={word + letterIndex}
+                key={`${wordIndex}-${letterIndex}-${letter}`}
                 initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{

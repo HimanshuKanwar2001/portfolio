@@ -1,33 +1,69 @@
+import { motion, useScroll, useTransform } from "framer-motion";
 import React from "react";
 
 const ParallaxBackground = () => {
+  const { scrollYProgress } = useScroll();
+  const mountain3Y = useTransform(scrollYProgress, [0, 0.5], ["0%", "70%"]);
+  const planetX = useTransform(scrollYProgress, [0, 0.5], ["0%", "-20%"]);
+  const mountain2Y = useTransform(scrollYProgress, [0, 0.5], ["0%", "30%"]);
+  const mountain1Y = useTransform(scrollYProgress, [0, 0.5], ["0%", "0%"]);
+
   return (
     <section className="absolute inset-0 bg-black/40">
       <div className="relative h-screen overflow-y-hidden">
         {/* Background Sky */}
         <div
-          className="absolute inset-0 w-full h-screen z-50"
+          className="absolute inset-0 w-full h-screen -z-50"
           style={{
             background: "url(/assets/sky.jpg)",
             backgroundPosition: "bottom",
             backgroundSize: "cover",
           }}
         />
-        {/* Moutain Layer 3 */}
-        <div
-          className="absolute inset-0 -z-40 "
+        {/* Mountain Layer 3 */}
+        <motion.div
+          className="absolute inset-0 -z-40"
           style={{
             background: "url(/assets/moutain-3.png)",
             backgroundPosition: "bottom",
             backgroundSize: "cover",
+            y: mountain3Y,
+            willChange: "transform",
           }}
         />
         {/* Planets */}
-        <div className="" />
+        <motion.div
+          className="absolute inset-0 -z-30"
+          style={{
+            background: "url(/assets/planets.png)",
+            backgroundPosition: "bottom",
+            backgroundSize: "cover",
+            y: planetX,
+            willChange: "transform",
+          }}
+        />
         {/* Mountain Layer 2 */}
-        <div />
+        <motion.div
+          className="absolute inset-0 -z-20"
+          style={{
+            background: "url(/assets/mountains.png)",
+            backgroundPosition: "bottom",
+            backgroundSize: "cover",
+            y: mountain2Y,
+            willChange: "transform",
+          }}
+        />
         {/* Mountain Layer 1 */}
-        <div />
+        <motion.div
+          className="absolute inset-0 -z-10"
+          style={{
+            background: "url(/assets/mountain-1.png)",
+            backgroundPosition: "bottom",
+            backgroundSize: "cover",
+            y: mountain1Y,
+            willChange: "transform",
+          }}
+        />
       </div>
     </section>
   );

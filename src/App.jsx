@@ -5,11 +5,18 @@ import Hero from "./sections/Hero";
 const App = () => {
   return (
     <div>
-      <h1 class="container mx-auto max-w-7xl">
+      <h1 className="container mx-auto max-w-7xl">
         {/* navbar */}
         <Navbar />
         {/* hero */}
         <Hero/>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
+        <section className="min-h-screen"></section>
         {/* about */}
         {/* projects */}
         {/* experience */}
